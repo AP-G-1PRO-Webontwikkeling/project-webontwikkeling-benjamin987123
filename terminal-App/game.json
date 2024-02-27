@@ -1,0 +1,192 @@
+[
+    {
+        "id": "#1",
+        "name": "Grand Theft Auto V",
+        "description": "Een open-wereld actie-avonturenspel waarin spelers de rol aannemen van drie criminelen die verschillende overvallen en misdaden plegen in de fictieve stad Los Santos.",
+        "metascore": 97,
+        "mostePopular": true ,
+        "releaseDate": "2013-09-17",
+        "imageUrl": "https://voorbeeld.com/gta_v.jpg",
+        "genre": "Actie-avontuur",
+        "thingsToDo": ["Missies voltooien", "Verkennen van de wereld", "Deelnemen aan activiteiten"],
+        "gameWorld": "Los Santos",
+        "gameYear": 2013,
+        "developer": {
+            "id": 101,
+            "name": "Rockstar North",
+            "country":  "Verenigd Koninkrijk", 
+            "foundingYear": 1988
+        }
+    },
+    {
+        "id": "#2",
+        "name": "Call of Duty: World at War",
+        "description": "Een first-person shooter die zich afspeelt tijdens de Tweede Wereldoorlog.",
+        "metascore": 85,
+        "mostePopular": false ,
+        "releaseDate": "2008-11-11",
+        "imageUrl": "https://voorbeeld.com/cod_ww2.jpg",
+        "genre": "First-person shooter",
+        "thingsToDo": ["Voltooi singleplayer-campagne", "Neem deel aan multiplayer-gevechten", "Speel zombie-modus"],
+        "gameWorld": "Tweede Wereldoorlog",
+        "gameYear": 1945,
+        "developer": {
+            "id": 102,
+            "name": "Treyarch",
+            "country":  "Verenigde Staten", 
+            "foundingYear": 1996
+        }
+    },
+    {
+        "id": "#3",
+        "name": "Medal of Honor: Allied Assault",
+        "description": "Een first-person shooter die zich afspeelt tijdens de Tweede Wereldoorlog, waarin spelers de rol van een soldaat op zich nemen en verschillende missies voltooien.",
+        "metascore": 91,
+        "mostePopular": true ,
+        "releaseDate": "2002-01-22",
+        "imageUrl": "https://voorbeeld.com/moh_aa.jpg",
+        "genre": "First-person shooter",
+        "thingsToDo": ["Voltooi singleplayer-campagne", "Speel multiplayer-maps", "Gebruik diverse wapens"],
+        "gameWorld": "Tweede Wereldoorlog",
+        "gameYear": 1944,
+        "developer": {
+            "id": 103,
+            "name": "2015, Inc.",
+            "country":  "Verenigde Staten", 
+            "foundingYear": 1997
+        }
+    },
+    {
+        "id": "4",
+        "name": "Kingdom Come: Deliverance",
+        "description": "Een realistische open-wereld actie-RPG die zich afspeelt in het Heilige Roomse Rijk, waar spelers de rol aannemen van een gewone burger die op zoek is naar wraak voor de dood van zijn ouders.",
+        "metascore": 76,
+        "mostePopular": false ,
+        "releaseDate": "2018-02-13",
+        "imageUrl": "https://voorbeeld.com/kingdom_come_deliverance.jpg",
+        "genre": "Actie-RPG",
+        "thingsToDo": ["Verken middeleeuwse dorpen en kastelen", "Voltooi uitdagende quests", "Neem deel aan middeleeuwse gevechten"],
+        "gameWorld": "Heilige Roomse Rijk",
+        "gameYear": 1403,
+        "developer": {
+            "id": 104,
+            "name": "Warhorse Studios",
+            "country":  "Tsjechië", 
+            "foundingYear": 2011
+        }
+    },
+    {
+        "id": "#5",
+        "name": "Nier Automata",
+        "description": "Een actie-RPG waarin spelers de rol van androïde strijders aannemen die vechten tegen buitenaardse machines in een post-apocalyptische wereld.",
+        "metascore": 88,
+        "mostePopular": true ,
+        "releaseDate": "2017-02-23",
+        "imageUrl": "https://voorbeeld.com/nier_automata.jpg",
+        "genre": "Actie-RPG",
+        "thingsToDo": ["Ontdek de open-wereld", "Voltooi verschillende eindes", "Pas je personage aan"],
+        "gameWorld": "Post-apocalyptische wereld",
+        "gameYear": 11945,
+        "developer": {
+            "id": 105,
+            "name": "PlatinumGames",
+            "country":  "Japan", 
+            "foundingYear": 2006
+        }
+    },
+    {
+        "id": "#6",
+        "name": "Mafia",
+        "description": "Een action-adventure game die zich afspeelt tijdens de jaren 1930, waarin spelers de rol van een Italiaans-Amerikaanse maffialid aannemen die opklimt in de criminele onderwereld van de stad Lost Heaven.",
+        "metascore": 88,
+        "mostePopular": true ,
+        "releaseDate": "2002-08-28",
+        "imageUrl": "https://voorbeeld.com/mafia.jpg",
+        "genre": "Actie-avontuur",
+        "thingsToDo": ["Verken de stad Lost Heaven", "Voltooi maffia-missies", "Neem deel aan illegale activiteiten"],
+        "gameWorld": "Lost Heaven",
+        "gameYear": 1930,
+        "developer": {
+            "id": 106,
+            "name": "Illusion Softworks",
+            "country":  "Tsjechië", 
+            "foundingYear": 1997
+        }
+    },
+    {
+        "id": "#7",
+        "name": "Far Cry 3",
+        "description": "Een first-person shooter die zich afspeelt op een tropisch eiland, waarin spelers de rol van Jason Brody op zich nemen en proberen te overleven en hun vrienden te redden van een gevaarlijke bende.",
+        "metascore": 88,
+        "mostePopular": true ,
+        "releaseDate": "2012-11-29",
+        "imageUrl": "https://voorbeeld.com/far_cry_3.jpg",
+        "genre": "First-person shooter",
+        "thingsToDo": ["Verken het eiland", "Voltooi missies", "Jaag op wilde dieren"],
+        "gameWorld": "Tropisch eiland",
+        "gameYear": 2012,
+        "developer": {
+            "id": 107,
+            "name": "Ubisoft Montreal",
+            "country":  "Canada", 
+            "foundingYear": 1997
+        }
+    },
+    {
+        "id": "#8",
+        "name": "Mass Effect: Andromeda",
+        "description": "Een action-RPG die zich afspeelt in de verre ruimte, waarin spelers de rol van Pathfinder aannemen en het Andromeda-galaxiestelsel verkennen op zoek naar een nieuwe thuiswereld voor de mensheid.",
+        "metascore": 71,
+        "mostePopular": false ,
+        "releaseDate": "2017-03-21",
+        "imageUrl": "https://voorbeeld.com/mass_effect_andromeda.jpg",
+        "genre": "Actie-RPG",
+        "thingsToDo": ["Verken verschillende planeten", "Ontdek nieuwe species", "Neem beslissingen die het verhaal beïnvloeden"],
+        "gameWorld": "Andromeda-galaxiestelsel",
+        "gameYear": 2819,
+        "developer": {
+            "id": 108,
+            "name": "BioWare",
+            "country":  "Canada", 
+            "foundingYear": 1995
+        }
+    },
+    {
+        "id": "#9",
+        "name": "Metro Exodus",
+        "description": "Een first-person shooter die zich afspeelt in een post-apocalyptische wereld, waarin spelers de rol van Artyom op zich nemen en op zoek gaan naar een nieuw thuis voor de overlevenden van Moskou.",
+        "metascore": 82,
+        "mostePopular": false ,
+        "releaseDate": "2019-02-15",
+        "imageUrl": "https://voorbeeld.com/metro_exodus.jpg",
+        "genre": "First-person shooter",
+        "thingsToDo": ["Overleef in de wildernis", "Verken verlaten steden", "Versla vijandige facties"],
+        "gameWorld": "Post-apocalyptisch Rusland",
+        "gameYear": 2036,
+        "developer": {
+            "id": 109,
+            "name": "4A Games",
+            "country":  "Oekraïne", 
+            "foundingYear": 2005
+        }
+    },
+    {
+        "id": "#10",
+        "name": "Crysis",
+        "description": "Een first-person shooter die zich afspeelt op een eiland in de Stille Oceaan, waarin spelers de rol aannemen van een supersoldaat die de strijd aangaat met buitenaardse wezens en Noord-Koreaanse troepen.",
+        "metascore": 91,
+        "mostePopular": true ,
+        "releaseDate": "2007-11-13",
+        "imageUrl": "https://voorbeeld.com/crysis.jpg",
+        "genre": "First-person shooter",
+        "thingsToDo": ["Gebruik nanosuit-krachten", "Verken de jungle", "Neem deel aan tactische gevechten"],
+        "gameWorld": "Eiland in de Stille Oceaan",
+        "gameYear": 2020,
+        "developer": {
+            "id": 110,
+            "name": "Crytek",
+            "country":  "Duitsland", 
+            "foundingYear": 1999
+        }
+    }  
+]
