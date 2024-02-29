@@ -41,7 +41,7 @@ do {
     }
     select();
     if (option === 2) {
-        let idFilter: number = readline.questionInt("Pleas enter the ID you want to filter by: ");
+        let idFilter: number = readline.questionInt("Pleas enter the ID you want to filter by: ")-1;
         console.log(`
         ID: ${games[idFilter].id}, 
         GAME: ${games[idFilter].name}, 
@@ -59,5 +59,7 @@ do {
         land waar het spel is developt: ${games[idFilter].developer.country}, 
         jaar waarin developer team is opgericht: ${games[idFilter].developer.foundingYear}`);
     }
-    select();
+    if (option !== 3) {
+        select();
+    }
 } while (option !== 3)
