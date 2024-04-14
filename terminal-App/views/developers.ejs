@@ -1,0 +1,12 @@
+<%- include('partials/header') %>
+<h1>Game Developer Information</h1>
+<ul>
+    <% devs.forEach(function(developer) { %>
+        <li>
+            Developer: <%= developer.name %><br>
+            Country: <%= developer.country %><br>
+            Founding Year: <%= developer.foundingYear %> <br> <br>
+        </li>
+    <% }); %>
+</ul>
+<%- include('partials/footer') %>

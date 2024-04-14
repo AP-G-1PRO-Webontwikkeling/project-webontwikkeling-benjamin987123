@@ -1,0 +1,45 @@
+section {
+    display: grid;
+    grid-template-areas: 
+    "header header header header header header header"
+    "nav nav nav nav nav nav nav"
+    "img A B C D E F";
+}
+
+img {
+    width: 150px;
+    height: 100px;
+}
+p {
+    margin: 0 auto;
+    padding-left: 10px;
+    padding-right: 10px;
+    
+    
+}
+div {
+    border: 2px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#imgDetail {
+    margin: auto 0;
+    height: 300px;
+    width: 450px;
+}
+#mainInfo {
+    text-align: center;
+}
+#top {
+    display: flex;
+    justify-content: center;
+}
+#nav {
+    display: flex;
+    list-style-type: none;
+    justify-content: space-around;
+}
+.navItem {
+    grid-area: nav;
+}

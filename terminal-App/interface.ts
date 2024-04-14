@@ -6,7 +6,7 @@ export interface Developer {
 }
 
 export interface Game {
-    id: string;
+    id: number;
     name: string;
     description: string;
     metascore: number;

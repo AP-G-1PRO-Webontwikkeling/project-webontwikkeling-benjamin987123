@@ -1,65 +1,169 @@
 import * as readline from 'readline-sync';
 import data from "./game.json";
 import { Game } from "./interface";
+import express, { Express } from 'express';
 
-const games: Game[] = data;
-let option:number = 0;
+const games = data;
+const app = express();
+const port = 3002;
+const path = require('path');
 
-function select() {
-    do {
-        let options: string[] = ["View all data", "Filter by ID", "Exit"];
-        option = readline.keyInSelect(options, "Please enter your choice:")+1;
-        if (option > 3 || option < 1 ) {
-            console.log("Verkeerde keuze kies 1,2 of 3");
-        } 
-    } while (option > 3 || option < 1);
-}
+app.set("view engine", "ejs");
+app.set('views', path.join(__dirname, 'views'));
+app.use(express.static("public"));
 
-console.log("Welcom to the JSON data viewer");
-select();
+app.get('/', (req, res) => {      
+    res.render('index', { games });
+});
 
-do {
-    if (option === 1) {
-        for (let i = 0; i < games.length; i++) {
-            console.log(`
-            ID: ${games[i].id}, 
-            GAME: ${games[i].name}, 
-            beschrijving ${games[i].description}, 
-            metascore: ${games[i].metascore}, 
-            meest populairste: ${games[i].mostePopular}, 
-            release jaar: ${games[i].releaseDate}, 
-            afbeelding url:  ${games[i].imageUrl}, 
-            genre: ${games[i].genre}, 
-            dingen die je kan doen: ${games[i].thingsToDo}, 
-            situering game wereld: ${games[i].gameWorld}, 
-            het jaar waar in het spel zich afspeeld: ${games[i].gameYear}, 
-            developer id: ${games[i].developer.id}, 
-            developer naam: ${games[i].developer.name}, 
-            land waar het spel is developt: ${games[i].developer.country}, 
-            jaar waarin developer team is opgericht: ${games[i].developer.foundingYear}`);
-        }
+app.get('/detail.ejs/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const game = games.find(game => game.id === id);
+    res.render('detail', { game: game });  
+});
+
+app.get('/search', (req, res) => {
+    const searchTerm = req.query.query;
+    let filteredGames = games;
+    if (searchTerm && typeof searchTerm === 'string') {
+        filteredGames = games.filter(game =>
+            game.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
     }
-    select();
-    if (option === 2) {
-        let idFilter: number = readline.questionInt("Pleas enter the ID you want to filter by: ")-1;
-        console.log(`
-        ID: ${games[idFilter].id}, 
-        GAME: ${games[idFilter].name}, 
-        beschrijving ${games[idFilter].description}, 
-        metascore: ${games[idFilter].metascore}, 
-        meest populairste: ${games[idFilter].mostePopular}, 
-        release jaar: ${games[idFilter].releaseDate}, 
-        afbeelding url:  ${games[idFilter].imageUrl}, 
-        genre: ${games[idFilter].genre}, 
-        dingen die je kan doen: ${games[idFilter].thingsToDo}, 
-        situering game wereld: ${games[idFilter].gameWorld}, 
-        het jaar waar in het spel zich afspeeld: ${games[idFilter].gameYear}, 
-        developer id: ${games[idFilter].developer.id}, 
-        developer naam: ${games[idFilter].developer.name}, 
-        land waar het spel is developt: ${games[idFilter].developer.country}, 
-        jaar waarin developer team is opgericht: ${games[idFilter].developer.foundingYear}`);
+    res.render('index', { games: filteredGames, searchTerm });
+});
+
+app.get('/nameSort', (req, res) => {
+    let sortDirection = req.query.sortDirection || 'asc';
+
+    if (sortDirection === 'asc') {
+        games.sort((a, b) => a.name.localeCompare(b.name));
+    } else {
+        games.sort((a, b) => b.name.localeCompare(a.name));
     }
-    if (option !== 3) {
-        select();
+   
+    const nextSortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+
+    res.render('index', { games, sortDirection, nextSortDirection });
+});
+
+app.get('/dateSort', (req, res) => {
+    let sortDirection = req.query.sortDirection || 'asc';
+
+    if (sortDirection === 'asc') {
+        games.sort((a, b) => a.releaseDate.localeCompare(b.releaseDate));
+    } else {
+        games.sort((a, b) => b.releaseDate.localeCompare(a.releaseDate));
     }
-} while (option !== 3)
+   
+    const nextSortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+
+    res.render('index', { games, sortDirection, nextSortDirection });
+});
+
+app.get('/metascoreSort', (req, res) => {
+    let sortDirection = req.query.sortDirection || 'asc';
+
+    if (sortDirection === 'asc') {
+        games.sort((a, b) => a.metascore - b.metascore);
+    } else {
+        games.sort((a, b) => b.metascore - a.metascore);
+    }
+   
+    const nextSortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+
+    res.render('index', { games, sortDirection, nextSortDirection });
+});
+
+app.get('/genreSort', (req, res) => {
+    let sortDirection = req.query.sortDirection || 'asc';
+
+    if (sortDirection === 'asc') {
+        games.sort((a, b) => a.genre.localeCompare(b.genre));
+    } else {
+        games.sort((a, b) => b.genre.localeCompare(a.genre));
+    }
+   
+    const nextSortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+
+    res.render('index', { games, sortDirection, nextSortDirection });
+});
+
+app.get('/worldSort', (req, res) => {
+    let sortDirection = req.query.sortDirection || 'asc';
+
+    if (sortDirection === 'asc') {
+        games.sort((a, b) => a.gameWorld.localeCompare(b.gameWorld));
+    } else {
+        games.sort((a, b) => b.gameWorld.localeCompare(a.gameWorld));
+    }
+   
+    const nextSortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+
+    res.render('index', { games, sortDirection, nextSortDirection });
+});
+
+app.get('/thingsSort', (req, res) => {
+    let sortDirection = req.query.sortDirection || 'asc';
+
+    if (sortDirection === 'asc') {
+        games.sort((a, b) => a.thingsToDo[0].localeCompare(b.thingsToDo[0]));
+    } else {
+        games.sort((a, b) => b.thingsToDo[0].localeCompare(a.thingsToDo[0]));
+    }
+   
+    const nextSortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+
+    res.render('index', { games, sortDirection, nextSortDirection });
+});
+
+app.get('/developerSort', (req, res) => {
+    let sortDirection = req.query.sortDirection || 'asc';
+
+    if (sortDirection === 'asc') {
+        games.sort((a, b) => a.developer.name.toString().localeCompare(b.developer.name.toString()));
+    } else {
+        games.sort((a, b) => b.developer.name.toString().localeCompare(a.developer.name.toString()));
+    }
+   
+    const nextSortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+
+    res.render('index', { games, sortDirection, nextSortDirection });
+});
+
+app.get('/relatedGenre', (req, res) => {
+    const searchTerm = req.query.genre;
+    let filteredGames = games;
+    if (searchTerm && typeof searchTerm === 'string') {
+        filteredGames = games.filter(game =>
+            game.genre.includes(searchTerm)
+        );
+    }
+    res.render('index', { games: filteredGames, searchTerm });
+});
+
+app.get('/relatedWorld', (req, res) => {
+    const searchTerm = req.query.gameWorld;
+    let filteredGames = games;
+    if (searchTerm && typeof searchTerm === 'string') {
+        filteredGames = games.filter(game =>
+            game.gameWorld.includes(searchTerm)
+        );
+    }
+    res.render('index', { games: filteredGames, searchTerm });
+});
+
+app.get('/developer/:id', (req, res) => {
+    const developerId = parseInt(req.params.id);
+    const game = games.find(game => game.developer.id === developerId);
+        res.render('developer', { game });
+});
+
+app.get('/developers', (req, res) => { 
+    const devs = games.map(game => game.developer);
+    res.render('developers', { devs });
+});
+
+app.listen(port, () => {
+    console.log(`Server is running at http://localhost:${port}`);
+});

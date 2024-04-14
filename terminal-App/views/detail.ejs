@@ -1,0 +1,21 @@
+<%- include("partials/header")  %>
+    <main>
+        <div><img id="imgDetail" src="<%= game.imageUrl %>" alt=""></div> <br>
+        <div>           
+            <%= game.name %> <br>  
+            <p><a href="/relatedGenre?genre=<%= game.genre %>"><%= game.genre %></a></p> <br>
+            <p>metascore: <%= game.metascore %> </p> <br>
+            <p>released: <%= game.releaseDate %> </p> <br> 
+        </div> <br>
+        <div>
+            <p>game jaar: <%= game.gameYear %> </p> <br>  
+            <p>game wereld: <a href="/relatedWorld?gameWorld=<%= game.gameWorld %>"><%= game.gameWorld %></a> </p> <br>
+            <p>meest populairste: <%= game.mostePopular %> </p> <br>
+        </div> <br>
+        <div> <%= game.thingsToDo %> </div><br>
+        <div> <%= game.description %> </div> <br>
+        <div> developer: <a href="/developer/<%= game.developer.id %>"><%= game.developer.name %> </a> </div>
+
+    </main>
+<%- include("partials/footer") %>
+
