@@ -12,12 +12,7 @@
         "thingsToDo": ["Missies voltooien", "Verkennen van de wereld", "Deelnemen aan activiteiten"],
         "gameWorld": "Los Santos",
         "gameYear": 2013,
-        "developer": {
-            "id": 101,
-            "name": "Rockstar North",
-            "country":  "Verenigd Koninkrijk",
-            "foundingYear": 1988
-        }
+        "developer": 101
     },
     {
         "id": 2 ,
@@ -32,12 +27,7 @@
         "thingsToDo": ["Voltooi singleplayer-campagne", "Neem deel aan multiplayer-gevechten", "Speel zombie-modus"],
         "gameWorld": "Tweede Wereldoorlog",
         "gameYear": 1945,
-        "developer": {
-            "id": 102,
-            "name": "Treyarch",
-            "country":  "Verenigde Staten", 
-            "foundingYear": 1996
-        }
+        "developer": 102    
     },
     {
         "id": 3,
@@ -52,12 +42,7 @@
         "thingsToDo": ["Voltooi singleplayer-campagne", "Speel multiplayer-maps", "Gebruik diverse wapens"],
         "gameWorld": "Tweede Wereldoorlog",
         "gameYear": 1944,
-        "developer": {
-            "id": 103,
-            "name": "2015, Inc.",
-            "country":  "Verenigde Staten", 
-            "foundingYear": 1997
-        }
+        "developer": 103   
     },
     {
         "id": 4,
@@ -72,12 +57,7 @@
         "thingsToDo": ["Verken middeleeuwse dorpen en kastelen", "Voltooi uitdagende quests", "Neem deel aan middeleeuwse gevechten"],
         "gameWorld": "HRE",
         "gameYear": 1403,
-        "developer": {
-            "id": 104,
-            "name": "Warhorse Studios",
-            "country":  "Tsjechië", 
-            "foundingYear": 2011
-        }
+        "developer": 104
     },
     {
         "id": 5,
@@ -92,12 +72,7 @@
         "thingsToDo": ["Ontdek de open-wereld", "Voltooi verschillende eindes", "Pas je personage aan"],
         "gameWorld": "Post-apocalyptische",
         "gameYear": 11945,
-        "developer": {
-            "id": 105,
-            "name": "PlatinumGames",
-            "country":  "Japan", 
-            "foundingYear": 2006
-        }
+        "developer": 105      
     },
     {
         "id": 6,
@@ -112,12 +87,7 @@
         "thingsToDo": ["Verken de stad Lost Heaven", "Voltooi maffia-missies", "Neem deel aan illegale activiteiten"],
         "gameWorld": "Lost Heaven",
         "gameYear": 1930,
-        "developer": {
-            "id": 106,
-            "name": "Illusion Softworks",
-            "country":  "Tsjechië", 
-            "foundingYear": 1997
-        }
+        "developer": 106        
     },
     {
         "id": 7,
@@ -132,12 +102,7 @@
         "thingsToDo": ["Verken het eiland", "Voltooi missies", "Jaag op wilde dieren"],
         "gameWorld": "Tropisch eiland",
         "gameYear": 2012,
-        "developer": {
-            "id": 107,
-            "name": "Ubisoft Montreal",
-            "country":  "Canada", 
-            "foundingYear": 1997
-        }
+        "developer": 107       
     },
     {
         "id": 8,
@@ -152,12 +117,7 @@
         "thingsToDo": ["Verken verschillende planeten", "Ontdek nieuwe species", "Neem beslissingen die het verhaal beïnvloeden"],
         "gameWorld": "Andromeda-galaxiestelsel",
         "gameYear": 2819,
-        "developer": {
-            "id": 108,
-            "name": "BioWare",
-            "country":  "Canada", 
-            "foundingYear": 1995
-        }
+        "developer": 108      
     },
     {
         "id": 9,
@@ -172,12 +132,7 @@
         "thingsToDo": ["Overleef in de wildernis", "Verken verlaten steden", "Versla vijandige facties"],
         "gameWorld": "Post-apocalyptisch",
         "gameYear": 2036,
-        "developer": {
-            "id": 109,
-            "name": "4A Games",
-            "country":  "Oekraïne", 
-            "foundingYear": 2005
-        }
+        "developer": 109     
     },
     {
         "id": 10,
@@ -192,11 +147,6 @@
         "thingsToDo": ["Gebruik nanosuit-krachten", "Verken de jungle", "Neem deel aan tactische gevechten"],
         "gameWorld": "Eiland in de Stille Oceaan",
         "gameYear": 2020,
-        "developer": {
-            "id": 110,
-            "name": "Crytek",
-            "country":  "Duitsland", 
-            "foundingYear": 1999
-        }
+        "developer": 110       
     }  
 ]

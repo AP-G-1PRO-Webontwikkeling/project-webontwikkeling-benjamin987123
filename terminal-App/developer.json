@@ -1,0 +1,62 @@
+[
+    {
+        "id": 101,
+        "name": "Rockstar North",
+        "country":  "Verenigd Koninkrijk",
+        "foundingYear": 1988
+    },
+    {
+        "id": 102,
+        "name": "Treyarch",
+        "country":  "Verenigde Staten", 
+        "foundingYear": 1996
+    },
+    {
+        "id": 103,
+        "name": "2015, Inc.",
+        "country":  "Verenigde Staten", 
+        "foundingYear": 1997
+    },
+    {
+        "id": 104,
+        "name": "Warhorse Studios",
+        "country":  "Tsjechië", 
+        "foundingYear": 2011
+    },
+    {
+        "id": 105,
+        "name": "PlatinumGames",
+        "country":  "Japan", 
+        "foundingYear": 2006
+    },
+    {
+        "id": 106,
+        "name": "Illusion Softworks",
+        "country":  "Tsjechië", 
+        "foundingYear": 1997
+    },
+    {
+        "id": 107,
+        "name": "Ubisoft Montreal",
+        "country":  "Canada", 
+        "foundingYear": 1997
+    },
+    {
+        "id": 108,
+        "name": "BioWare",
+        "country":  "Canada", 
+        "foundingYear": 1995
+    },
+    {
+        "id": 109,
+        "name": "4A Games",
+        "country":  "Oekraïne", 
+        "foundingYear": 2005
+    },
+    {
+        "id": 110,
+        "name": "Crytek",
+        "country":  "Duitsland", 
+        "foundingYear": 1999
+    }
+]
