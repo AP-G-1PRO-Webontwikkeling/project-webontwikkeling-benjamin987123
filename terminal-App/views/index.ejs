@@ -6,24 +6,24 @@
             <input type="text" id="searchInput" name="query" placeholder="zoeken">         
         </form> 
 <%- include("partials/nav") %>
-        <br>
-        <section>                   
+        <br>                         
             <% for (let i = 0; i < games.length; i++) { %>
-                       
-                <div><a href="/detail.ejs/<%= games[i].id %>">    
-                    <p><%= games[i].name %></p> <br>         
-                    <img class="image" src="<%= games[i].imageUrl %>" alt="<%= games[i].name %>">                                    
-                </a></div>
-                <div><p><%= games[i].releaseDate %> </p></div>
-                <div><p><%= games[i].metascore %></p> </div>               
-                <div><p><%= games[i].genre %> </p></div>
-                <div>
-                    <p><%= games[i].gameWorld %> </p>
-                    <p><%= games[i].gameYear%> </p>
-                </div>                                                                          
-                <div><p><%= games[i].thingsToDo %> </p></div>
-                <div><p> <a href="/developer/<%= games[i].developer.id %>"><%= games[i].developer.name %></a> </p></div>
+                <ul id="json">
+                    <li class="mainGame"><a href="/detail.ejs/<%= games[i].id %>">    
+                        <%= games[i].name %> <br>         
+                        <img class="image" src="<%= games[i].imageUrl %>" alt="<%= games[i].name %>"></a>                                                         
+                    </li>
+                    <li class="mainGame"><%= games[i].releaseDate %></li>
+                    <li class="mainGame"><%= games[i].metascore %></li>               
+                    <li class="mainGame"><%= games[i].genre %></li>
+                    <li class="mainGame">
+                        <%= games[i].gameWorld %>
+                        <%= games[i].gameYear%>
+                    </li>                                                                          
+                    <li class="mainGame"><%= games[i].thingsToDo %></li>
+                    <li class="mainGame"><a href="/developer/<%= games[i].developer.id %>"><%= games[i].developer.name %></a></li>
+                </ul> 
                 <% } %>  
-        </section>                 
+                                
     </main>
 <%- include("partials/footer") %>

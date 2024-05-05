@@ -17,5 +17,5 @@ export interface Game {
     thingsToDo: string[];
     gameWorld: string;
     gameYear: number;
-    developer: Developer;
+    developer: number;
 }

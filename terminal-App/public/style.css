@@ -9,19 +9,19 @@ section {
 img {
     width: 150px;
     height: 100px;
+    margin: auto 0;
 }
-p {
-    margin: 0 auto;
-    padding-left: 10px;
-    padding-right: 10px;
-    
-    
-}
-div {
-    border: 2px solid black;
+.mainGame {
     display: flex;
     justify-content: center;
     align-items: center;
+    border: 2px solid black;   
+    list-style: none;
+    width: 500px;
+    height: 150px;
+}
+ul {
+    display: flex;
 }
 #imgDetail {
     margin: auto 0;
@@ -40,6 +40,21 @@ div {
     list-style-type: none;
     justify-content: space-around;
 }
-.navItem {
-    grid-area: nav;
+a {
+    text-decoration: none;
+}
+#releaseDate {
+    width: 80px;
+}
+#metascore {
+    width: 40px;
+}
+@media screen and (max-width: 720px) {
+    #json {
+        flex-direction: column;
+    }
+    img {
+        width: 300px;
+        height: 200px;
+    }
 }
