@@ -1,0 +1,11 @@
+<%- include("partials/header") %>
+<h1>Maak een account</h1>
+<form action="/register" method="post">
+    <label for="name">Naam: </label>
+    <input type="text" name="name" required> <br> <br>
+    <label for="password">Paswoord: </label>
+    <input type="password" name="password" required> <br> <br>
+    <input type="submit" value="registreren">
+</form> <br>
+<a href="/login">inloggen</a>
+<%- include("partials/footer") %>

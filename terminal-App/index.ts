@@ -1,25 +1,51 @@
 import * as readline from 'readline-sync';
-import { Game, Developer } from "./interface";
-import express, { Express, response } from 'express';
+import { Game, Developer, Profiel } from "./interface";
+import express, { Express, response, NextFunction } from 'express';
 import { MongoClient, Collection, ObjectId } from 'mongodb';
+import { secureMiddleware } from "./middleware/secureMiddleware";
+import { connect } from "./database";
 import path from 'path';
+import bcrypt from 'bcrypt';
+import session from "./session";
+import dotenv from "dotenv";
+import { loginRouter } from "./routes/loginRouter";
+import { homeRouter } from "./routes/homeRouter";
+import {User} from './types'
+import { login } from "./database";
 
-const uri = "mongodb+srv://Benjamin-Brys:qolonUHPpb123456@webontwikkeling.ubmujui.mongodb.net/"
-const client = new MongoClient(uri);
+dotenv.config();
+
 const app = express();
-const port = 3002;
-let collection: Collection<Game>;
-let collection2: Collection<Developer>;
-let games: Game[] = [];
-let developers: Developer[] = [];
+const port = process.env.PORT || 3000;
+const uri = process.env.MONGODB_URI!;
+const client = new MongoClient(uri);
+const saltRounds: number = Number(process.env.SALT_ROUNDS!);
 
+let collection1: Collection<Game>;
+let collection2: Collection<Developer>;
+let userCollection: Collection<Profiel>;
+let developers: Developer[] = [];
+let games: Game[] = [];
+let profiels: Profiel[] = []; 
+let filteredGames: Game[] = [];
+
+app.set("port", process.env.PORT || 3000);
 app.set("view engine", "ejs");
 app.set('views', path.join(__dirname, 'views'));
-app.use(express.static("public"));
 
-main();
-main2();
-export {};
+app.use(express.static("public"));
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended:true}))
+app.use(session);
+app.use(loginRouter());
+app.use(homeRouter());
+
+app.use((req, res, next) => {
+    console.log("Session data:", req.session);
+    next();
+});
+
+
 
 //API games
 async function fetchGames() {
@@ -63,7 +89,6 @@ async function fetchDevelopers() {
             throw new Error("API fetch error");
         }
         let data: any = await response.json();
-        let developers = []; // Maak een nieuwe array om de ontwikkelaarsgegevens op te slaan
         for (let i = 0; i < data.length; i++) {
             const element = data[i];
             developers.push({
@@ -79,46 +104,27 @@ async function fetchDevelopers() {
         return [];
     }
 }
-
-
-
 async function main() {
     try {
-        await client.connect();       
-        const db = client.db("project");
-        collection = db.collection("games");
-        console.log('Verbinding is gelukt.');  
-        if (((await collection.find({}).toArray()).length === 0)) {
-            await fetchGames();         
-            await collection.insertMany(games);        
-            console.log("Gegevens zijn verplaatst naar MongoDB");
-        } else {
-            await showAllGames();
-        }
-    } catch (error) {
-        console.log("fout bij main", error);
-    }
-    finally {
-        await client.close();
-        console.log('De verbinding met de database is gesloten.');
-    }
-}
-
-async function main2() {
-    try {
         await client.connect();
-        console.log('Verbinding is gelukt.');     
         const db = client.db("project");
+        collection1 = db.collection("games");
+        collection2 = db.collection("developers");
+        userCollection = db.collection("profiels");
+        console.log('Verbinding tot stand gebracht.'); 
 
-        collection2 = db.collection<Developer>("developers");
- 
-        if (((await collection2.find({}).toArray()).length === 0)) {
-            await fetchDevelopers();
-            await collection2.insertMany(developers)
-        } else {
-            await showAllDevelopers();
+        if ((await collection1.countDocuments()) === 0) {
+            await fetchGames();
+            await collection1.insertMany(games);
         }
-        console.log(developers)
+        if ((await collection2.countDocuments()) === 0) {
+            await fetchDevelopers();
+            await collection2.insertMany(developers);    
+        }
+
+        await showAllGames();
+        await showAllDevelopers(collection2);
+
     } catch (error) {
         console.log("fout bij main", error);
     }
@@ -127,37 +133,45 @@ async function main2() {
         console.log('De verbinding met de database is gesloten.');
     }
 }
-
 async function showAllGames() {
-    games = await collection.find({}).toArray();
+    games = await collection1.find({}).toArray();
     return games;
 }
-async function showAllDevelopers() {
+async function showAllDevelopers(collection2: Collection<Developer>) {
     developers = await collection2.find({}).toArray();
-    return developers;
+    return developers; 
 }
 
 
 
+/* <% if (admin === "ADMIN") { %><a href="/edit">Edit</a><% } %> */
 
 
-//index
-app.get('/', async (req, res) => {
+//games
+app.get('/games', secureMiddleware, async (req, res) => {
     try {  
-        res.render('index', { games });
+        const admin = req.headers.role;
+        res.render('games', { games, admin });
     } catch (error) {
         console.log('main page niet gelukt');
         res.status(500).send('main page niet gelukt');
     }
 });
+//developers
+app.get('/developers', secureMiddleware, async (req, res) => { 
+    try {
+        res.render('developers', { devs: developers });
+    } catch (error) {
+        console.log('Ontwikkelaars niet gevonden.', error);
+        res.status(500).send('Ontwikkelaars niet gevonden.');
+}});
 //zoekbalk
-app.get('/search', async (req, res) => {
+app.get('/search', secureMiddleware, async (req, res) => {
     try {
         await client.connect();
         console.log('Verbinding is gelukt.');     
         const db = client.db("project");
         const searchTerm = typeof req.query.query === 'string' ? req.query.query : '';
-        let filteredGames = [];
         if (searchTerm) {
             const regex = new RegExp(searchTerm, 'i');
             const collection = client.db("project").collection<Game>("games");
@@ -166,7 +180,7 @@ app.get('/search', async (req, res) => {
             const collection = client.db("project").collection<Game>("games");
             filteredGames = await collection.find({}).toArray();
         }
-        res.render('index', { games: filteredGames, searchTerm });
+        res.render('games', { games: filteredGames, searchTerm });
     } catch (error) {
         console.log('Niet gevonden.', error);
         res.status(500).send('Niet gevonden.');
@@ -178,32 +192,13 @@ app.get('/search', async (req, res) => {
 });
 
 
-app.get('/developers', async (req, res) => { 
-    try {
-        const collection2 = client.db("project").collection<Developer>("developers");
-        const developer = await collection2.distinct('developer.name');
-        res.render('developers', { developer });
-    } catch (error) {
-        console.log('Ontwikkelaars niet gevonden.', error);
-        res.status(500).send('Ontwikkelaars niet gevonden.');
-    } finally {
-        await client.close();
-        console.log('De verbinding met de database is gesloten.');
-    }
-});
-
-
-
-
-app.get('/detail/:id', async (req, res) => {
-    try {
-        await client.connect();        
-        const db = client.db("project");
-        const collection = db.collection<Game>("games");
-        console.log('Verbinding is gelukt.'); 
-        const id = parseInt(req.params.id);
-        const game = await collection.findOne({ id: id });
-        res.render('detail', { game: game });
+//details
+app.get('/game/:id', secureMiddleware, async (req, res) => {
+    try {    
+        await client.connect();
+        let id = parseInt(req.params.id);
+        const game = await collection1.findOne({ id: id });
+        res.render('game', { game });
     } catch (error) {
         console.log('Details weergeven niet gelukt.', error);
         res.status(500).send('Details weergeven niet gelukt.');
@@ -212,147 +207,200 @@ app.get('/detail/:id', async (req, res) => {
         console.log('De verbinding met de database is gesloten.');
     }
 });
-
-
-
-app.get('/developer/:id', (req, res) => {
+app.get('/developer/:id', secureMiddleware, async (req, res) => {
     try {
+        await client.connect();
         const id = parseInt(req.params.id);
-        const game = collection.findOne({id: id})
-        res.render('developer', { game: game });
+        const developer = await collection2.findOne({id: id})
+        res.render('developer', { dev: developer });
     } catch (error) {
         console.log('Developer weergeven niet gelukt.');
         res.status(500).send('Developer weergeven niet gelukt.');
+    } finally {
+        await client.close();
+        console.log('De verbinding met de database is gesloten.');
     }
-    
-    
-    
 });
 
 
 //related
-app.get('/relatedGenre', async (req, res) => {
+app.get('/relatedGenre', secureMiddleware, async (req, res) => {
     try {
-        const searchTerm = req.query.genre;
-        let filteredGames = [];
-        if (searchTerm && typeof searchTerm === 'string') {
-            filteredGames = await collection.find({ genre: searchTerm }).toArray();
-        } else {
-            filteredGames = await collection.find({}).toArray();
-        }
-        res.render('index', { games: filteredGames, searchTerm });
+        const search = req.query.genre;
+        let genreFilter: Game[] = [];
+        genreFilter = games.filter(game => game.genre === search)
+        res.render('games', { games: genreFilter, search });
     } catch (error) {
-        console.log('Er is een fout bij het filteren op genre.');
+        console.log('Er is een fout bij het filteren op genre.', error);
         res.status(500).send('Er is een fout bij het filteren op genre.');
     }
 });
-
-app.get('/relatedWorld', async (req, res) => {
+app.get('/relatedWorld', secureMiddleware, async (req, res) => {
     try {
-        await client.connect(); // Verbinding maken met de MongoDB-client
-        const db = client.db("project");
-        const collection = db.collection<Game>("games");
-        
-        const searchTerm = req.query.gameWorld;
-        let filteredGames = [];
-        if (searchTerm && typeof searchTerm === 'string') {
-            filteredGames = await collection.find({ gameWorld: searchTerm }).toArray();
-        } else {
-            filteredGames = await collection.find({}).toArray();
-        }
-        res.render('index', { games: filteredGames, searchTerm });
+        let search = req.query.gameWorld;
+        let worldFilter: Game[] = [];
+        worldFilter = games.filter(game => game.gameWorld === search)
+        res.render('games', { games: worldFilter, search });
     } catch (error) {
         console.log('Er is een fout bij het filteren op spelwereld.', error);
         res.status(500).send('Er is een fout bij het filteren op spelwereld.');
-    } finally {
-        await client.close(); // Verbinding sluiten
-        console.log('De verbinding met de database is gesloten.');
     }
 });
 
 
-
 //sorted
-app.get('/nameSort', async (req, res) => {
+app.get('/sortName', secureMiddleware, async (req, res) => {
     try {
-        await client.connect(); // Verbinding maken met de MongoDB-client
+        await client.connect(); 
         const db = client.db("project");
         const collection = db.collection<Game>("games");
-        
-        const games = await collection.find({}).sort({ name: 1 }).toArray();
-        res.render('index', { games });
+        if (filteredGames.length === 0) {
+            const games = await collection.find({}).sort({ name: 1 }).toArray();
+            res.render('games', { games }); 
+        } else {
+            filteredGames = filteredGames.sort((a, b) => a.name.localeCompare(b.name));
+            res.render('games', { games: filteredGames }); 
+            
+        }
     } catch (error) {
         console.log('Fout bij het sorteren op naam.', error);
         res.status(500).send('Fout bij het sorteren op naam.');
     } finally {
-        await client.close(); // Verbinding sluiten
+        await client.close();
+        console.log('De verbinding met de database is gesloten.');
+    }
+});
+app.get('/sortDate', secureMiddleware, async (req, res) => {
+    try {
+        await client.connect(); 
+        const db = client.db("project");
+        const collection = db.collection<Game>("games");
+        if (filteredGames.length === 0) {
+            const games = await collection.find({}).sort({ releaseDate: 1 }).toArray();
+            res.render('games', { games }); 
+        } else {
+            filteredGames = filteredGames.sort((a, b) => a.releaseDate.localeCompare(b.releaseDate));
+            res.render('games', { games: filteredGames }); 
+        }
+    } catch (error) {
+        console.log('Fout bij het sorteren op naam.', error);
+        res.status(500).send('Fout bij het sorteren op naam.');
+    } finally {
+        await client.close();
+        console.log('De verbinding met de database is gesloten.');
+    }
+});
+app.get('/sortMeta', secureMiddleware, async (req, res) => {
+    try {
+        await client.connect(); 
+        const db = client.db("project");
+        const collection = db.collection<Game>("games");
+        if (filteredGames.length === 0) {
+            const games = await collection.find({}).sort({ metascore: 1 }).toArray();
+            res.render('games', { games }); 
+        } else {
+            filteredGames = filteredGames.sort((a, b) => a.metascore - (b.metascore));
+            res.render('games', { games: filteredGames }); 
+        }
+    } catch (error) {
+        console.log('Fout bij het sorteren op naam.', error);
+        res.status(500).send('Fout bij het sorteren op naam.');
+    } finally {
+        await client.close();
+        console.log('De verbinding met de database is gesloten.');
+    }
+});
+app.get('/sortGenre', secureMiddleware, async (req, res) => {
+    try {
+        await client.connect(); 
+        const db = client.db("project");
+        const collection = db.collection<Game>("games");
+        if (filteredGames.length === 0) {
+            const games = await collection.find({}).sort({ genre: 1 }).toArray();
+            res.render('games', { games }); 
+        } else {
+            filteredGames = filteredGames.sort((a, b) => a.genre.localeCompare(b.genre));
+            res.render('games', { games: filteredGames }); 
+        }
+    } catch (error) {
+        console.log('Fout bij het sorteren op naam.', error);
+        res.status(500).send('Fout bij het sorteren op naam.');
+    } finally {
+        await client.close();
+        console.log('De verbinding met de database is gesloten.');
+    }
+});
+app.get('/sortWorld', secureMiddleware, async (req, res) => {
+    try {
+        await client.connect(); 
+        const db = client.db("project");
+        const collection = db.collection<Game>("games");
+        if (filteredGames.length === 0) {
+            const games = await collection.find({}).sort({ gameworld: 1 }).toArray();
+            res.render('games', { games }); 
+        } else {
+            filteredGames = filteredGames.sort((a, b) => a.gameWorld.localeCompare(b.gameWorld));
+            res.render('games', { games: filteredGames }); 
+        }
+    } catch (error) {
+        console.log('Fout bij het sorteren op naam.', error);
+        res.status(500).send('Fout bij het sorteren op naam.');
+    } finally {
+        await client.close();
+        console.log('De verbinding met de database is gesloten.');
+    }
+});
+app.get('/sortAct', secureMiddleware, async (req, res) => {
+    try {
+        await client.connect(); 
+        const db = client.db("project");
+        const collection = db.collection<Game>("games");
+        if (filteredGames.length === 0) {
+            const games = await collection.find({}).sort({ thingstodo: 1 }).toArray();
+            res.render('games', { games }); 
+        } else {
+            filteredGames = filteredGames.sort((a, b) => a.thingsToDo.length - (b.thingsToDo.length));
+            res.render('games', { games: filteredGames }); 
+        }
+    } catch (error) {
+        console.log('Fout bij het sorteren op naam.', error);
+        res.status(500).send('Fout bij het sorteren op naam.');
+    } finally {
+        await client.close();
+        console.log('De verbinding met de database is gesloten.');
+    }
+});
+app.get('/sortDev', secureMiddleware, async (req, res) => {
+    try {
+        await client.connect(); 
+        const db = client.db("project");
+        const collection = db.collection<Game>("games");
+        if (filteredGames.length === 0) {
+            const games = await collection.find({}).sort({ devloper: 1 }).toArray();
+            res.render('games', { games }); 
+        } else {
+            filteredGames = filteredGames.sort((a, b) => a.developer - (b.developer));
+            res.render('games', { games: filteredGames }); 
+        }
+    } catch (error) {
+        console.log('Fout bij het sorteren op naam.', error);
+        res.status(500).send('Fout bij het sorteren op naam.');
+    } finally {
+        await client.close();
         console.log('De verbinding met de database is gesloten.');
     }
 });
 
 
-app.get('/dateSort', async (req, res) => {
-    try {       
-        const games = await collection.find({}).sort({date: 1}).toArray();
-        res.render('index', { games });
-    } catch (error) {
-        console.log('Fout bij het sorteren op date.');
-        res.status(500).send('Fout bij het sorteren op date.');
-    }
-});
-
-app.get('/metascoreSort', async (req, res) => {
-    try {       
-        const games = await collection.find({}).sort({metascore: 1}).toArray();
-        res.render('index', { games });
-    } catch (error) {
-        console.log('Fout bij het sorteeren op metascore.');
-        res.status(500).send('Fout bij het sorteren op metascore.');
-    }
-});
-
-app.get('/genreSort', async (req, res) => {
+app.listen(app.get("port"), async() => {
     try {
-        const games = await collection.find({}).sort({genre: 1}).toArray();
-        res.render('index', {games});
-    } catch (error) {
-        console.log('Fout bij het sorteeren op genre.');
-        res.status(500).send('Fout bij het sorteeren op genre.');
+        await connect();
+        console.log("Server started on http://localhost:" + app.get('port'));
+    } catch (e) {
+        console.log(e);
+        process.exit(1); 
     }
 });
 
-app.get('/worldSort', async(req, res) => {
-    try {
-        const game = await collection.find({}).sort({world: 1}).toArray();
-        res.render('index', { games});
-    } catch (error) {
-        console.log('Fout bij het sorteeren op world.')
-        res.status(500).send('Fout bij het sorteeren op world.')
-    } 
-});
-
-app.get('/thingsSort', async(req, res) => {
-    try {
-        const game = await collection.find({}).sort({things: 1}).toArray();
-        res.render('index', {games});
-    } catch (error) {
-        console.log('Fout bij het sorteeren op things.');
-        res.status(500).send('Fout bij het sorteeren op things.');
-    }
-})
-
-app.get('/developerSort', async (req, res) => {
-    try {
-        const games = await collection.find({}).sort({developer: 1}).toArray;
-        res.render('index', {games});
-    } catch (error) {
-        console.log('Fout bij het sorteeren op developer.');
-        res.status(500).send('Fout bij het sorteeren op developer.');
-    }
-})
-
-
-app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
-});
-
+main();
+export {}

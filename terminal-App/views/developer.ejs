@@ -1,9 +1,10 @@
 <%- include('partials/header') %>
+<a href="/games">games</a> <a href="/developers">developers</a> <a href="/login">logout</a>
     <h2>developer</h2> 
-    <section>       
-        id - <%= game.developer.id %> <br>
-        name - <%= game.developer.name %> <br>
-        Country - <%= game.developer.country %> <br>
-        Founding Year - <%= game.developer.foundingYear %>    
-    </section>
+    <ul id="Flex">      
+        <li> Id - <%= dev.id %> </li>
+        <li> Name - <%= dev.name %> </li>
+        <li> Country - <%= dev.country %> </li>
+        <li> Founding Year - <%= dev.foundingYear %> </li>    
+    </ul>
 <%- include('partials/footer') %>

@@ -19,3 +19,10 @@ export interface Game {
     gameYear: number;
     developer: number;
 }
+
+export interface Profiel {
+    id: number;
+    name: string;
+    password: string;
+    admin: boolean;
+}
