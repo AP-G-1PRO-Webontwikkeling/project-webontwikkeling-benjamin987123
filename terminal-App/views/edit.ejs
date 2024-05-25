@@ -1,3 +1,35 @@
 <%- include("partials/header") %>
-<%- include("partials/nav") %>
+    
+    <form action="/edit/<%= name %>" method="POST">
+
+        <h1><%= name %></h1>
+
+        <label for="imageUrl">Image URL:</label>
+        <input type="text" name="imageUrl"><br> <br>
+
+        <label for="metascore">Metascore:</label>
+        <input type="number" name="metascore"><br> <br>
+
+        <label for="genre">Genre: </label>
+        <select name="genre">
+            <option value="Actie RPG">Actie RPG</option>
+            <option value="Actie avontuur">Actie avontuur</option>
+            <option value="First person shooter">First person shooter</option>
+            <option value="Racing">Racing</option>
+        </select> <br> <br>
+
+        <label for="releaseDate">Release Date:</label>
+        <input type="date" name="releaseDate"><br> <br>
+
+        <label for="gameWorld">Game World:</label>
+        <input type="text" name="gameWorld"><br> <br>
+
+        <label for="gameYear">Game Year:</label>
+        <input type="number" name="gameYear"><br> <br>
+
+        <label for="developer">Developer:</label>
+        <input type="number" name="developer"><br> <br>
+        
+        <input type="submit" value="edit">
+    </form>
 <%- include("partials/footer") %>

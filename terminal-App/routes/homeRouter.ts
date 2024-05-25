@@ -1,7 +1,9 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import { User } from "../types";
-import { client, userCollection } from '../database';
+import { userCollection } from '../database';
+
+const saltRounds: number = Number(process.env.SALT_ROUNDS);
 
 export function homeRouter() {
     const router = express.Router();
@@ -10,23 +12,21 @@ export function homeRouter() {
         res.render("register");
     });
 
-    router.post("register", async(req, res) => {
+    router.post("/register", async(req, res) => {
         try {
             const name = req.body.name;
             const pasw = req.body.password;
-            await client.connect();        
-            await userCollection.findOne(name);
-            if (!name) {
-                const hash = await bcrypt.hash(pasw, 10)
-                await userCollection.insertOne({name: name, password: hash, role: "USER"})
-                res.redirect("../views/login")
+            const newUser = await userCollection.findOne({name: name});
+            if (!newUser) {
+                const hash = await bcrypt.hash(pasw, saltRounds)
+                const user: User = { name: name, password: hash, role: "USER" };
+                await userCollection.insertOne(user);
+                res.redirect("../login")
             } else {
-                res.redirect("../views/register")
+                res.redirect("../register")
             }
         } catch (error) {
             res.status(500).send("Internal Server Error");
-        } finally {
-            await client.close();
         }
     })
 

@@ -1,18 +1,26 @@
 import dotenv from "dotenv";
-dotenv.config();
 import { Admin, MongoClient } from "mongodb";
 import { User } from "./types";
 import bcrypt from "bcrypt";
+import { Developer, Game } from "./interface";
 
+dotenv.config();
 
 export const MONGODB_URI = process.env.MONGODB_URI ?? "mongodb://localhost:27017";
-
 export const client = new MongoClient(MONGODB_URI);
-
-export const userCollection = client.db("project").collection<User>("profiel");
+export const collection1 = client.db("project").collection<Game>("games");
+export const collection2 = client.db("project").collection<Developer>("developers");
+export const userCollection = client.db("project").collection<User>("profiels");
 
 const saltRounds : number = 10;
 
+export async function connect() {
+    await client.connect();
+    await createAdmin();
+    await createUser();
+    console.log("Connected to database");
+    process.on("SIGINT", exit);
+}
 async function exit() {
     try {
         await client.close();
@@ -23,20 +31,13 @@ async function exit() {
     process.exit(0);
 }
 
-export async function connect() {
-    await client.connect();
-    await createAdmin();
-    await createUser();
-    console.log("Connected to database");
-    process.on("SIGINT", exit);
-}
 
 async function createAdmin() {
     if (await userCollection.countDocuments() > 0) {
         return;
     }
-    let name : string | undefined = "admin";
-    let password : string | undefined = "adminPW"
+    let name : string | undefined = process.env.ADMIN_NAME;
+    let password : string | undefined = process.env.ADMIN_PASSWORD;
     if (name === undefined || password === undefined) {
         throw new Error("ADMIN_NAME and ADMIN_PASSWORD must be set in environment");
     }
@@ -46,7 +47,6 @@ async function createAdmin() {
         role: "ADMIN"
     });
 }
-
 async function createUser() {
     if (await userCollection.countDocuments() > 1) {
         return;
@@ -62,7 +62,6 @@ async function createUser() {
         role: "USER"
     });
 }
-
 export async function login(name: string, password: string) {
     if (name === "" || password === "") {
         throw new Error("Name and password required");
@@ -78,3 +77,78 @@ export async function login(name: string, password: string) {
         throw new Error("User not found");
     }
 }
+
+async function fetchGames() {
+    try {
+        const respons = await fetch('https://raw.githubusercontent.com/AP-G-1PRO-Webontwikkeling/project-webontwikkeling-benjamin987123/main/terminal-App/game.json', {
+            method: "GET"
+        });
+        if (!respons.ok) {
+            throw new Error("API fetch error");
+        }
+        let data: any = await respons.json();
+        let games: Game[] = [];
+        for (let i = 0; i < data.length; i++) {
+            const element = data[i];
+            games.push({
+                id: element.id,          
+                name: element.name,
+                description: element.description,
+                metascore: element.metascore,
+                mostePopular: element.mostePopular,
+                releaseDate: element.releaseDate,
+                imageUrl: element.imageUrl,
+                genre: element.genre,
+                thingsToDo: element.thingsToDo,
+                gameWorld: element.gameWorld,
+                gameYear: element.gameYear,
+                developer: element.developer            
+            })           
+        }
+        return games;
+    } catch (error) {
+        console.log(error, "internal error")
+        return[];
+    }
+}
+async function fetchDevelopers() {
+    try {
+        const response = await fetch('https://raw.githubusercontent.com/AP-G-1PRO-Webontwikkeling/project-webontwikkeling-benjamin987123/main/terminal-App/developer.json', {
+            method: "GET"
+        });
+        if (!response.ok) {
+            throw new Error("API fetch error");
+        }
+        let data: any = await response.json();
+        let developers: Developer[] = [];
+        for (let i = 0; i < data.length; i++) {
+            const element = data[i];
+            developers.push({
+                id: element.id,
+                name: element.name,
+                country: element.country,
+                foundingYear: element.foundingYear
+            });
+        }
+        return developers;
+    } catch (error) {
+        console.log(error, "internal error");
+        return [];
+    }
+}
+async function main() {
+    try {
+        if ((await collection1.countDocuments()) === 0) {
+            const games = await fetchGames();
+            await collection1.insertMany(games);
+        }
+        if ((await collection2.countDocuments()) === 0) {
+            const developers = await fetchDevelopers();
+            await collection2.insertMany(developers);    
+        }
+    } catch (error) {
+        console.log("fout bij main", error);
+    }
+}
+
+main();
