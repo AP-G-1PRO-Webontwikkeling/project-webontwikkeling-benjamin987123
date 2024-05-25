@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.ts"
+    "start": "ts-node index.ts"
   },
   "author": "",
   "license": "ISC",
@@ -17,7 +17,8 @@
     "@types/express-session": "^1.18.0",
     "@types/node": "^20.11.20",
     "@types/node-fetch": "^2.6.11",
-    "@types/readline-sync": "^1.4.8"
+    "@types/readline-sync": "^1.4.8",
+    "ts-node": "^10.4.0"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
