@@ -7,7 +7,7 @@ export function loginRouter() {
     const router = express.Router();
 
     router.get("/login", async (req, res) => {
-        if (req.session.user) {
+        if (req.session) {
             console.log("render games");
             res.redirect("../games");
         } else {
