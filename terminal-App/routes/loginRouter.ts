@@ -9,9 +9,9 @@ export function loginRouter() {
     router.get("/login", async (req, res) => {
         if (!req.session.user) {
             console.log("render games");
-            res.redirect("../views/games");
+            res.redirect("../games");
         } else {
-            res.render("../views/login");
+            res.render("../login");
         }
     });
 

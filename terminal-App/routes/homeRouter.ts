@@ -23,7 +23,7 @@ export function homeRouter() {
                 await userCollection.insertOne(user);
                 res.redirect("../login")
             } else {
-                res.redirect("../register")
+                res.send("Deze gebruikersnaam bestaat al."); // Stuur een bericht naar de gebruiker
             }
         } catch (error) {
             res.status(500).send("Internal Server Error");
