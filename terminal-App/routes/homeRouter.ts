@@ -3,6 +3,8 @@ import bcrypt from "bcrypt";
 import { User } from "../types";
 import { userCollection } from '../database';
 
+
+
 const saltRounds: number = Number(process.env.SALT_ROUNDS);
 
 export function homeRouter() {

@@ -3,6 +3,29 @@ import { User } from "../types";
 import { login } from "../database";
 import { secureMiddleware } from "../middleware/secureMiddleware";
 
+
+const app = express();
+
+
+import path from 'path';
+app.set("port", process.env.PORT || 3000);
+app.set("view engine", "ejs");
+app.set('views', path.join(__dirname, 'views'));
+
+app.use(express.static("public"));
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended:true}))
+app.use(loginRouter());
+
+app.use(secureMiddleware);
+
+
+
+
+
+
+
+
 export function loginRouter() {
     const router = express.Router();
 
@@ -16,7 +39,7 @@ export function loginRouter() {
     });
 
     router.post("/login", async (req, res) => {
-        const name: string = req.body.email;
+        const name: string = req.body.name;
         const password: string = req.body.password;
         try {
             let user: User = await login(name, password);
