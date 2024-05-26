@@ -17,7 +17,7 @@ declare module 'express-session' {
 }
 
 export default session({
-    secret: process.env.SESSION_SECRET!,
+    secret: process.env.SESSION_SECRET! ?? "my-super-secret-secret",
     store: mongoStore,
     resave: true,
     saveUninitialized: true,

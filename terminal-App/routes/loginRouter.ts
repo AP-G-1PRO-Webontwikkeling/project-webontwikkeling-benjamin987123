@@ -29,11 +29,12 @@ app.use(secureMiddleware);
 export function loginRouter() {
     const router = express.Router();
 
-    router.get("/login", async (req, res) => {
+    router.get("/login", (req, res) => {
         if (req.session.user) {
-            console.log("render games");
+            console.log("User is already logged in, redirecting to /games");
             res.redirect("/games");
         } else {
+            res.set('Cache-Control', 'no-store');
             res.render("login");
         }
     });

@@ -11,6 +11,8 @@ export function homeRouter() {
     const router = express.Router();
 
     router.get("/", async(req, res) => {
+        const username = req.session.user;
+        console.log(username);
         res.render("register");
     });
 
@@ -19,6 +21,7 @@ export function homeRouter() {
             const name = req.body.name;
             const pasw = req.body.password;
             const newUser = await userCollection.findOne({name: name});
+            console.log(newUser);
             if (!newUser) {
                 const hash = await bcrypt.hash(pasw, saltRounds)
                 const user: User = { name: name, password: hash, role: "USER" };
