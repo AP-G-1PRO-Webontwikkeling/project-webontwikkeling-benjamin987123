@@ -7,16 +7,16 @@ export function loginRouter() {
     const router = express.Router();
 
     router.get("/login", async (req, res) => {
-        if (req.session) {
+        if (req.session.user) {
             console.log("render games");
-            res.redirect("../games");
+            res.redirect("/games");
         } else {
-            res.render("../login");
+            res.render("login");
         }
     });
 
     router.post("/login", async (req, res) => {
-        const name: string = req.body.name;
+        const name: string = req.body.email;
         const password: string = req.body.password;
         try {
             let user: User = await login(name, password);
