@@ -3,9 +3,10 @@
         <h1>Overzicht games</h1> 
         <form action="/search" method="post">
             <label for="searchInput"></label>
-            <input type="text" id="searchInput" name="query" placeholder="zoeken">         
+            <input type="text" id="searchInput" name="query" placeholder="zoeken">   
+            <button type="submit">zoeken</button>
         </form>
-        <a href="/games">games</a> <a href="/developers">developers</a> <a href="/login">logout</a>
+        <a href="/games">games</a> <a href="/developers">developers</a> <a href="/logout">logout</a>
 <%- include("partials/nav") %>
         <br>
             <% for (let i = 0; i < games.length; i++) { %>

@@ -3,8 +3,6 @@ import bcrypt from "bcrypt";
 import { User } from "../types";
 import { userCollection } from '../database';
 
-
-
 const saltRounds: number = Number(process.env.SALT_ROUNDS);
 
 export function homeRouter() {
@@ -13,7 +11,11 @@ export function homeRouter() {
     router.get("/", async(req, res) => {
         const username = req.session.user;
         console.log(username);
-        res.render("register");
+        if (req.session.user) {
+            res.redirect("/games");
+        } else {
+            res.render("register");
+        } 
     });
 
     router.post("/register", async(req, res) => {
@@ -26,9 +28,9 @@ export function homeRouter() {
                 const hash = await bcrypt.hash(pasw, saltRounds)
                 const user: User = { name: name, password: hash, role: "USER" };
                 await userCollection.insertOne(user);
-                res.redirect("../login")
+                res.redirect("/login")
             } else {
-                res.redirect("../register")
+                res.redirect("/register")
             }
         } catch (error) {
             res.status(500).send("Internal Server Error");

@@ -28,23 +28,35 @@ app.use(secureMiddleware);
 
 app.get('/games', secureMiddleware, async (req, res) => {
     try {  
-        const search = req.query.search;
-        const filterGenre = req.query.genre;
-        const filterWorld = req.query.world;     
+        
+        req.session.filterGenre = "";
+        req.session.filterWorld = "";
+        const search: any = req.query.search;
+        const filterGenre: any = req.query.genre;
+        const filterWorld: any = req.query.world;     
         const admin = req.session.user?.role
         const sorted: any = req.query.sorted; 
         const order = req.query.order === 'desc' ? -1 : 1;
         let games;
-
         if (search) {
             const regex = new RegExp(String(search), 'i');
             games = await collection1.find({ name: { $regex: regex } }).toArray();
         } else if (filterGenre) {
-            games = await collection1.find({genre: filterGenre}).sort({[sorted]: order}).toArray();
+            req.session.filterGenre = filterGenre;
+            games = await collection1.find({genre: filterGenre}).toArray();
         } else if (filterWorld) {
-            games = await collection1.find({gameWorld: filterWorld}).sort({[sorted]: order}).toArray();
+            req.session.filterWorld = filterWorld;
+            games = await collection1.find({gameWorld: filterWorld}).toArray();
         } else if (sorted) {
-            games = await collection1.find({}).sort({[sorted]: order}).toArray();   
+            let a = req.session.filterWorld;
+            let b = req.session.filterGenre;
+            if (req.session.filterWorld) {
+                games = await collection1.find({gameWorld: a}).sort({[sorted]: order}).toArray();   
+            } else if (req.session.filterGenre) {
+                games = await collection1.find({gameWorld: b}).sort({[sorted]: order}).toArray();   
+            } else {
+                games = await collection1.find({}).sort({[sorted]: order}).toArray(); 
+            }
         } else {
             games = await collection1.find({}).toArray();
         }

@@ -3,11 +3,10 @@ import { User } from "../types";
 import { login } from "../database";
 import { secureMiddleware } from "../middleware/secureMiddleware";
 
-
 const app = express();
 
-
 import path from 'path';
+
 app.set("port", process.env.PORT || 3000);
 app.set("view engine", "ejs");
 app.set('views', path.join(__dirname, 'views'));
@@ -16,27 +15,16 @@ app.use(express.static("public"));
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended:true}))
 app.use(loginRouter());
-
 app.use(secureMiddleware);
-
-
-
-
-
-
-
 
 export function loginRouter() {
     const router = express.Router();
 
     router.get("/login", (req, res) => {
         if (req.session.user) {
-            console.log("User is already logged in, redirecting to /games");
-            res.redirect("/games");
-        } else {
-            res.set('Cache-Control', 'no-store');
-            res.render("login");
+            res.redirect("/games")
         }
+        res.render("login");
     });
 
     router.post("/login", async (req, res) => {
@@ -46,15 +34,21 @@ export function loginRouter() {
             let user: User = await login(name, password);
             delete user.password;
             req.session.user = user;
-            res.redirect("../games")
+            res.redirect("/games")
         } catch (e: any) {
-            res.redirect("../login");
+            console.log("Login failed, redirecting to login");
+            res.redirect("/login");
         }
     });
 
-    router.post("/logout", secureMiddleware, async (req, res) => {
+    router.get("/logout", secureMiddleware, async (req, res) => {
         req.session.destroy((err) => {
-            res.redirect("../login");
+            if (err) {
+                console.error("Failed to destroy session:", err);
+            } else {
+                console.log("Session destroyed successfully");
+            }
+            res.redirect("/login");
         });
     });
 

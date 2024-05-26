@@ -13,6 +13,10 @@ const mongoStore = new MongoDBStore({
 declare module 'express-session' {
     export interface SessionData {
         user?: User
+        search?: string
+        sort?: string
+        filterWorld?: string
+        filterGenre?: string
     }
 }
 
