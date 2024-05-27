@@ -25,35 +25,38 @@ app.use(loginRouter());
 app.use(homeRouter());
 app.use(secureMiddleware);
 
-
 app.get('/games', secureMiddleware, async (req, res) => {
     try {  
-        
-        req.session.filterGenre = "";
-        req.session.filterWorld = "";
-        const search: any = req.query.search;
-        const filterGenre: any = req.query.genre;
-        const filterWorld: any = req.query.world;     
+        const search: any = req.query.search;   
         const admin = req.session.user?.role
         const sorted: any = req.query.sorted; 
-        const order = req.query.order === 'desc' ? -1 : 1;
         let games;
         if (search) {
+            req.session.search = search;
             const regex = new RegExp(String(search), 'i');
             games = await collection1.find({ name: { $regex: regex } }).toArray();
-        } else if (filterGenre) {
-            req.session.filterGenre = filterGenre;
-            games = await collection1.find({genre: filterGenre}).toArray();
-        } else if (filterWorld) {
-            req.session.filterWorld = filterWorld;
-            games = await collection1.find({gameWorld: filterWorld}).toArray();
+        } else if (req.query.genre) {
+            games = await collection1.find({genre: req.query.genre}).toArray();
+        } else if (req.query.world) {
+            games = await collection1.find({gameWorld: req.query.world}).toArray();
         } else if (sorted) {
-            let a = req.session.filterWorld;
-            let b = req.session.filterGenre;
-            if (req.session.filterWorld) {
-                games = await collection1.find({gameWorld: a}).sort({[sorted]: order}).toArray();   
-            } else if (req.session.filterGenre) {
-                games = await collection1.find({gameWorld: b}).sort({[sorted]: order}).toArray();   
+            if (req.session.sortLast !== sorted) {
+                req.session.sort = -1
+            }
+            req.session.sortLast = sorted;
+            if (req.session.sort === -1) {
+                req.session.sort = 1;
+            } else {
+                req.session.sort = -1;
+            }
+            let order = req.session.sort;
+            if (req.session.World) {
+                games = await collection1.find({gameWorld: req.session.World}).sort({[sorted]: order}).toArray();  
+            } else if (req.session.Genre) {
+                games = await collection1.find({genre: req.session.Genre}).sort({[sorted]: order}).toArray();   
+            } else if (req.session.search) {
+                const regex = new RegExp(String(req.session.search), 'i');
+                games = await collection1.find({ name: { $regex: regex } }).sort({[sorted]: order}).toArray(); 
             } else {
                 games = await collection1.find({}).sort({[sorted]: order}).toArray(); 
             }
@@ -65,6 +68,17 @@ app.get('/games', secureMiddleware, async (req, res) => {
     } catch (error) {
         console.log('Main page kon niet geladen worden.');
         res.status(500).send('Main page kon niet geladen worden.');
+    }
+});
+app.get('/reset', secureMiddleware, async (req, res) => {
+    try {
+        req.session.Genre = "";
+        req.session.World = "";
+        req.session.search = "";
+        res.redirect("/games")
+    } catch (error) {
+        console.log('Error bij filters resetten.');
+        res.status(500).send('Error bij filters resetten.');
     }
 });
 app.get('/developers', secureMiddleware, async (req, res) => { 

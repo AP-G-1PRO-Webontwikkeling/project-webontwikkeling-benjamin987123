@@ -14,9 +14,10 @@ declare module 'express-session' {
     export interface SessionData {
         user?: User
         search?: string
-        sort?: string
-        filterWorld?: string
-        filterGenre?: string
+        sort?: 1 | -1
+        World?: string
+        Genre?: string
+        sortLast?: string
     }
 }
 
